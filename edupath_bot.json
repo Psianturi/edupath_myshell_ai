@@ -1,0 +1,87 @@
+{
+    "type": "automata",
+    "id": "edu_path",
+    "initial": "home_page_state",
+    "inputs": {},
+    "outputs": {},
+    "transitions": {
+      "go_home": "home_page_state"
+    },
+    "states": {
+      "home_page_state": {
+        "render": {
+          "text": "Click the button to begin the chat!",
+          "buttons": [
+            {
+              "content": "Ready?? \n Let's Chat",
+              "description": "Click the button to Start Chatting.",
+              "on_click": "start_chat"
+            }
+          ]
+        },
+        "transitions": {
+          "start_chat": "intro_message_state"
+        }
+      },
+      "intro_message_state": {
+        "render": {
+          "text": "Hi, welcome to the MyShelll, I'm EduPath Bot. How can I assist you today?",
+          "buttons": [
+            {
+              "content": "Home",
+              "description": "Click to Go Back to Home.",
+              "on_click": "go_home"
+            }
+          ]
+        },
+        "transitions": {
+          "CHAT": "chat_page_state"
+        }
+      },
+      "chat_page_state": {
+        "inputs": {
+          "user_message": {
+            "type": "IM",
+            "user_input": true
+          }
+        },
+        "tasks": [
+          {
+            "name": "generate_reply",
+            "module_type": "AnyWidgetModule",
+            "module_config": {
+              "widget_id": "1744214047475109888", // GPT 4
+              // "widget_id": "1744214270301704192", //LLama
+              "system_prompt": "You are a support teaching Education or Learning Path, and give feedback to user who want to choose college major",
+              "user_prompt": "{{user_message}}",
+              "output_name": "reply"
+            }
+          },
+          {
+            "name": "generate_voice",
+            "module_type": "AnyWidgetModule",
+            "module_config": {
+              "widget_id": "1754356409225400320", // TTS widget (Angelina)
+              "content": "{{reply}}",
+              "output_name": "reply_voice"
+            }
+          }
+        ],
+        "render": {
+          "text": "{{reply}}",
+          "audio": "{{reply_voice}}",
+          "buttons": [
+            {
+              "content": "Home",
+              "description": "Click to Go Back to Home.",
+              "on_click": "listen"
+            }
+          ]
+        },
+        "transitions": {
+          "listen": "home_page_state",
+          "CHAT": "chat_page_state"
+        }
+      }
+    }
+  }
